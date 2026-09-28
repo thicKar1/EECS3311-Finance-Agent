@@ -10,15 +10,15 @@ Personal financial management is often tedious and overwhelming for individuals 
 
 ### 1.2 Target Users
 
-* **Students & Young Professionals:** Need simple automated budget tracking and clear financial advice.
-* **Casual Users:** Want quick answers about their spending habits without navigating complex financial reports.
+- **Students & Young Professionals:** Need simple automated budget tracking and clear financial advice.
+- **Casual Users:** Want quick answers about their spending habits without navigating complex financial reports.
 
 ### 1.3 Agent Description & AI Model
 
 The AI agent serves as an intelligent financial advisor and data processor. It does not merely answer static questions; it autonomously inspects user spending data, detects anomalies, dynamically suggests category classifications based on vendor names, and generates context-aware savings strategies.
 
-* **AI/LLM Model:** OpenAI GPT-4o-mini (or Ollama Llama-3 locally for offline development).
-* **System Integration:** The core application passes structured JSON payloads containing recent transactions and user query strings to `LLMClient`. The model responds with JSON-formatted structural outputs or conversational advice parsed directly by `FinanceAgentFacade`.
+- **AI/LLM Model:** OpenAI GPT-4o-mini (or Ollama Llama-3 locally for offline development).
+- **System Integration:** The core application passes structured JSON payloads containing recent transactions and user query strings to `LLMClient`. The model responds with JSON-formatted structural outputs or conversational advice parsed directly by `FinanceAgentFacade`.
 
 ### 1.4 Architecture Summary
 
