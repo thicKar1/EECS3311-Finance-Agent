@@ -1,16 +1,19 @@
 public class ToolFactory {
     public static FinanceTool createTool(String toolType) {
-        if (toolType == null) {
-            return null;
-        }
+        if (toolType == null) return null;
         
-        if (toolType.equalsIgnoreCase("budget")) {
-            return new BudgetTool();
-        } else if (toolType.equalsIgnoreCase("transaction")) {
-            return new TransactionTool();
+        switch (toolType.toLowerCase()) {
+            case "budget": return new BudgetTool();
+            case "transaction": return new TransactionTool();
+            case "summary": return new SummaryTool();
+            case "anomaly": return new AnomalyTool();
+            case "goal": return new GoalTool();
+            case "tax": return new TaxTool();
+            case "debt": return new DebtTool();
+            case "currency": return new CurrencyTool();
+            case "investment": return new InvestmentTool();
+            case "bill": return new BillTool();
+            default: throw new IllegalArgumentException("Unknown tool type: " + toolType);
         }
-        // We will add the remaining 8 tools here as we build them
-        
-        throw new IllegalArgumentException("Unknown tool type requested: " + toolType);
     }
 }
