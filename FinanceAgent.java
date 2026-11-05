@@ -2,40 +2,42 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FinanceAgent {
-    private String apiKey;
-    private Map<String, FinanceTool> tools;
+    private LLMClient llm;
+    private Map<String, String> availableTools;
 
     public FinanceAgent() {
-        this.apiKey = System.getenv("LLM_API_KEY");
-        this.tools = new HashMap<>();
-        this.tools.put("check_budget", new BudgetTool());
+        this.llm = new LLMClient();
+        this.availableTools = new HashMap<>();
+        
+        // This map provides descriptions to the LLM so it knows what each tool does
+        availableTools.put("budget", "Fetches the user's current budget and spending status.");
+        availableTools.put("transaction", "Allows the user to enter a new financial transaction.");
     }
 
     public String processQuery(String userId, String query) {
-        // Step 1: Reason
-        System.out.println("Agent Reasoning: Analyzing query '" + query + "'");
-        String selectedTool = decideTool(query);
+        // Step 1: Reason (LLM decision process)
+        System.out.println("\n[Agent] Thinking about which tool to use for: '" + query + "'");
+        String selectedToolName = llm.analyzeQueryForTool(query, availableTools);
         
-        // Step 2: Act
-        String context = "No specific tool needed.";
-        if (selectedTool != null && tools.containsKey(selectedTool)) {
-            System.out.println("Agent Action: Executing " + selectedTool);
-            context = tools.get(selectedTool).execute(userId, new String[]{});
+        String contextData;
+        
+        // Step 2: Act (Execute the tool using the Factory)
+        if (selectedToolName != null) {
+            System.out.println("[Agent] Action Selected: " + selectedToolName);
+            try {
+                FinanceTool tool = ToolFactory.createTool(selectedToolName);
+                contextData = tool.execute(userId, new String[]{}); // Args would be parsed by LLM in full version
+                System.out.println("[Agent] Data retrieved: " + contextData);
+            } catch (Exception e) {
+                contextData = "Error executing tool: " + e.getMessage();
+            }
+        } else {
+            System.out.println("[Agent] No specific tool required.");
+            contextData = "No external data fetched.";
         }
 
-        // Step 3: Synthesize
-        return "Based on my analysis: " + context + " You are on track!";
-    }
-
-    private String decideTool(String query) {
-        if (query.toLowerCase().contains("budget")) {
-            return "check_budget";
-        }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        FinanceAgent agent = new FinanceAgent();
-        System.out.println("Final Output: " + agent.processQuery("user_123", "How is my budget looking?"));
+        // Step 3: Synthesize (Final LLM generation based on tool data)
+        System.out.println("[Agent] Generating final natural language response...");
+        return llm.generateFinalResponse(query, contextData);
     }
 }
