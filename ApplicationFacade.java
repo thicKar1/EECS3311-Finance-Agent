@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.Scanner;
 
 public class ApplicationFacade {
@@ -9,65 +8,80 @@ public class ApplicationFacade {
     }
 
     public void runCLI() {
-        System.out.println("--- Personal Finance Agent CLI ---");
+        System.out.println("==========================================");
+        System.out.println("   Personal Finance AI Agent - CLI Mode   ");
+        System.out.println("==========================================");
         Scanner scanner = new Scanner(System.in);
+        
         System.out.print("Enter User ID: ");
         String userId = scanner.nextLine();
-        
+
         while (true) {
-            System.out.print("Ask a question (or type 'exit'): ");
+            System.out.print("\nAsk a finance question (or type 'exit' to quit): ");
             String query = scanner.nextLine();
-            if (query.equalsIgnoreCase("exit")) break;
-            
+            if (query.equalsIgnoreCase("exit")) {
+                System.out.println("Exiting CLI mode. Goodbye!");
+                break;
+            }
+            if (query.trim().isEmpty()) {
+                continue;
+            }
             String response = agent.processQuery(userId, query);
-            System.out.println("Agent: " + response + "\n");
+            System.out.println("\n[Agent Response]:\n" + response);
         }
-        scanner.close();
     }
 
     public void runGUI() {
-        JFrame frame = new JFrame("Personal Finance Agent");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(null);
+        // Swing GUI startup
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.JFrame frame = new javax.swing.JFrame("Personal Finance AI Agent");
+            frame.setSize(400, 300);
+            frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+            
+            javax.swing.JPanel panel = new javax.swing.JPanel();
+            frame.add(panel);
+            panel.add(new javax.swing.JLabel("Enter User ID:"));
+            javax.swing.JTextField userField = new javax.swing.JTextField(20);
+            panel.add(userField);
 
-        JLabel userLabel = new JLabel("Enter User ID:");
-        userLabel.setBounds(20, 20, 100, 25);
-        frame.add(userLabel);
+            panel.add(new javax.swing.JLabel("Ask Question:"));
+            javax.swing.JTextField queryField = new javax.swing.JTextField(20);
+            panel.add(queryField);
 
-        JTextField userEntry = new JTextField();
-        userEntry.setBounds(130, 20, 200, 25);
-        frame.add(userEntry);
+            javax.swing.JButton submitBtn = new javax.swing.JButton("Submit");
+            panel.add(submitBtn);
 
-        JLabel queryLabel = new JLabel("Ask a question:");
-        queryLabel.setBounds(20, 60, 100, 25);
-        frame.add(queryLabel);
+            submitBtn.addActionListener(e -> {
+                String uId = userField.getText();
+                String q = queryField.getText();
+                if (!uId.isEmpty() && !q.isEmpty()) {
+                    String res = agent.processQuery(uId, q);
+                    javax.swing.JOptionPane.showMessageDialog(frame, res);
+                }
+            });
 
-        JTextField queryEntry = new JTextField();
-        queryEntry.setBounds(130, 60, 200, 25);
-        frame.add(queryEntry);
-
-        JButton submitButton = new JButton("Submit");
-        submitButton.setBounds(130, 100, 100, 30);
-        frame.add(submitButton);
-
-        submitButton.addActionListener(e -> {
-            String userId = userEntry.getText();
-            String query = queryEntry.getText();
-            if (userId.isEmpty() || query.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Please enter both User ID and a query.");
-                return;
-            }
-            String response = agent.processQuery(userId, query);
-            JOptionPane.showMessageDialog(frame, response, "Agent Response", JOptionPane.INFORMATION_MESSAGE);
+            frame.setVisible(true);
         });
-
-        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
         ApplicationFacade app = new ApplicationFacade();
-        // You can swap to runCLI() for terminal testing
-        app.runGUI(); 
+        
+        // Parse command line arguments properly
+        boolean isCliMode = false;
+        if (args.length > 0) {
+            for (String arg : args) {
+                if (arg.equalsIgnoreCase("--mode=cli") || arg.equalsIgnoreCase("cli")) {
+                    isCliMode = true;
+                    break;
+                }
+            }
+        }
+
+        if (isCliMode) {
+            app.runCLI();
+        } else {
+            app.runGUI();
+        }
     }
 }
