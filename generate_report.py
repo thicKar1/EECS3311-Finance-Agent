@@ -183,15 +183,15 @@ def build_pdf():
 
     # Section 7: Demonstration Index
     story.append(Paragraph("7. Feature Demonstration Video Index", h1_style))
-    demo_headers = [Paragraph("Feature ID & Name", table_cell_bold), Paragraph("Interface Demonstrated", table_cell_bold), Paragraph("Video Link / Timestamp", table_cell_bold)]
+    demo_headers = [Paragraph("Feature ID & Name", table_cell_bold), Paragraph("Interface Demonstrated", table_cell_bold), Paragraph("Video Link", table_cell_bold)]
     demo_data = [demo_headers]
     for i in range(1, 11):
         demo_data.append([
             Paragraph(f"F{i:02d}: {features_info[i-1][0].split(': ')[1]}", table_cell),
             Paragraph("CLI & GUI Modes", table_cell),
-            Paragraph("https://youtu.be/demo_placeholder [0:15 - 2:30]", table_cell)
+            Paragraph("https://drive.google.com/file/d/1e_SROuEhsqcdwOpftfZNulXx_KkDH23X/view?usp=sharing", table_cell)
         ])
-    t_demo = Table(demo_data, colWidths=[160, 130, 250])
+    t_demo = Table(demo_data, colWidths=[150, 100, 290])
     t_demo.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#EAECEE')),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#BDC3C7')),
