@@ -153,4 +153,13 @@ public class DataManager {
         }
         budgetLimits.put(userId.trim().toLowerCase(), newLimit);
     }
+
+    public synchronized void resetDatabase() {
+        this.budgetLimits.clear();
+        try (PrintWriter out = new PrintWriter(new FileWriter(dataFile, false))) {
+            // Overwrites finance_transactions.csv to be completely empty
+        } catch (IOException e) {
+            System.out.println("Error resetting database: " + e.getMessage());
+        }
+    }
 }
