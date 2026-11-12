@@ -17,11 +17,16 @@ public class ApplicationFacade {
         String userId = scanner.nextLine();
 
         while (true) {
-            System.out.print("\nAsk a finance question (or type 'exit' to quit): ");
+            System.out.print("\nAsk a finance question (or type 'reset' / 'exit'): ");
             String query = scanner.nextLine();
             if (query.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting CLI mode. Goodbye!");
                 break;
+            }
+            if (query.equalsIgnoreCase("reset")) {
+                DataManager.getInstance().resetDatabase();
+                System.out.println("\n[System]: Database reset! All transactions and custom budget limits have been cleared.");
+                continue;
             }
             if (query.trim().isEmpty()) {
                 continue;
