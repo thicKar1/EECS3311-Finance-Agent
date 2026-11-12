@@ -61,6 +61,15 @@ public class DataManager {
         saveTransaction("user1", 150.00, "Dining");
     }
 
+    public synchronized void resetDatabase() {
+        this.budgetLimits.clear();
+        try (PrintWriter out = new PrintWriter(new FileWriter(dataFile, false))) {
+            // Overwrites the CSV file to be completely empty (0 transactions)
+        } catch (IOException e) {
+            System.out.println("Error resetting database: " + e.getMessage());
+        }
+    }
+
     public synchronized boolean saveTransaction(String userId, double amount, String category) {
         if (userId == null || userId.trim().isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be empty.");
@@ -152,14 +161,5 @@ public class DataManager {
             throw new IllegalArgumentException("Budget limit must be greater than zero.");
         }
         budgetLimits.put(userId.trim().toLowerCase(), newLimit);
-    }
-
-    public synchronized void resetDatabase() {
-        this.budgetLimits.clear();
-        try (PrintWriter out = new PrintWriter(new FileWriter(dataFile, false))) {
-            // Overwrites finance_transactions.csv to be completely empty
-        } catch (IOException e) {
-            System.out.println("Error resetting database: " + e.getMessage());
-        }
     }
 }
